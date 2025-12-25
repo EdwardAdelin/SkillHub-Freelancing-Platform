@@ -18,7 +18,7 @@ export default function Navbar() {
         <Link to="/" className="text-2xl font-bold">SkillHub</Link>
         
         <div className="flex items-center space-x-6">
-          <Link to="/jobs" className="hover:text-gray-200">Find Work</Link>
+          <Link to="/jobs" className="hover:text-gray-200">Browse Jobs</Link>
           
           {user ? (
             <>

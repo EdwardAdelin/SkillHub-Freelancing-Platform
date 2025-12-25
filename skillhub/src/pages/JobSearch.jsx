@@ -78,7 +78,7 @@ export default function JobSearch() {
         
         {/* Header & Search Controls */}
         <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Find Work</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">Browse jobs</h1>
           
           <div className="grid md:grid-cols-4 gap-4">
             {/* Search Bar */}
