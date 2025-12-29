@@ -26,6 +26,7 @@ function App() {
           <Route path="/jobs" element={<JobSearch />} />
           {/* Dynamic route for specific jobs */}
           <Route path="/jobs/:id" element={<JobDetails />} />
+          <Route path="/profile/:id" element={<Profile />} />
         </Routes>
       </div>
     </Router>

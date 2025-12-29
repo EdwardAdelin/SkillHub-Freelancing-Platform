@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { db } from '../lib/firebase';
 import { doc, getDoc, collection, addDoc, query, getDocs, orderBy } from 'firebase/firestore';
 import { useAuth } from '../lib/AuthContext';
-import { Clock, DollarSign, Calendar, User, Send } from 'lucide-react';
+import { Clock, DollarSign, Calendar, User, Send, Mail } from 'lucide-react';
 
 export default function JobDetails() {
   const { id } = useParams(); // Get the job ID from the URL
@@ -62,13 +62,14 @@ export default function JobDetails() {
     try {
       // Save to 'proposals' sub-collection inside this job
       await addDoc(collection(db, "jobs", id, "proposals"), {
-        freelancerId: user.uid,
-        freelancerName: user.displayName || user.email,
-        bidAmount: Number(bidAmount),
-        deliveryTime: Number(deliveryTime),
-        coverLetter: coverLetter,
-        submittedAt: new Date(),
-        status: 'pending' // 'pending', 'accepted', 'rejected'
+      freelancerId: user.uid,
+      freelancerName: user.displayName || user.email,
+      freelancerEmail: user.email, // <--- ADD THIS LINE (Important for messaging)
+      bidAmount: Number(bidAmount),
+      deliveryTime: Number(deliveryTime),
+      coverLetter: coverLetter,
+      submittedAt: new Date(),
+      status: 'pending' 
       });
 
       alert("Proposal submitted successfully!");
@@ -124,9 +125,23 @@ export default function JobDetails() {
                     </div>
                     <div className="text-sm text-gray-500 mb-2">Delivery in {prop.deliveryTime} days</div>
                     <p className="text-gray-700 bg-gray-100 p-3 rounded text-sm">{prop.coverLetter}</p>
+                    {/* Inside the Proposals Map function... */}
                     <div className="mt-3 flex gap-2">
-                      <button className="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Message</button>
-                      <button className="border border-gray-300 px-3 py-1 rounded text-sm hover:bg-gray-200">View Profile</button>
+                      {/* MESSAGE BUTTON: Opens default mail app */}
+                      <a 
+                        href={`mailto:${prop.freelancerEmail}?subject=Regarding your proposal for: ${job.title}`}
+                        className="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-blue-700 flex items-center gap-1"
+                      >
+                        <Mail size={14} /> Message
+                      </a>
+
+                      {/* VIEW PROFILE BUTTON: Links to our new dynamic route */}
+                      <Link 
+                        to={`/profile/${prop.freelancerId}`}
+                        className="border border-gray-300 px-3 py-1 rounded text-sm hover:bg-gray-200 text-gray-700 flex items-center gap-1"
+                      >
+                        <User size={14} /> View Profile
+                      </Link>
                     </div>
                   </div>
                 ))}
