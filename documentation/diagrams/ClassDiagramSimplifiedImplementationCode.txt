@@ -1,0 +1,87 @@
+@startuml
+!theme plain
+title Class Diagram - SkillHub Platform (React + Firebase)
+
+package "Presentation Layer (React)" {
+
+  class "AuthContext" as AuthContext {
+    + user: User
+    + login(email, password)
+    + logout()
+    + register(email, password, role)
+  }
+
+  class "PostJob" as PostJob {
+    + title: string
+    + budget: number
+    + handleSubmit()
+  }
+
+  class "JobSearch" as JobSearch {
+    + filterCategory: string
+    + filterBudget: number
+    + search(keyword)
+    + filter()
+  }
+
+  class "JobDetails" as JobDetails {
+    + jobId: string
+    + handleHire(proposalId)
+    + handleFinishJob()
+    + submitProposal(amount, days)
+  }
+
+  class "Dashboard" as Dashboard {
+    + loadUserJobs()
+    + loadUserProposals()
+  }
+}
+
+package "Data Layer (Firestore Models)" {
+
+  class "User" as UserEntity {
+    + uid: string <<PK>>
+    + email: string
+    + role: string
+    + displayName: string
+    + skills: List<String>
+  }
+
+  class "Job" as JobEntity {
+    + id: string <<PK>>
+    + clientId: string <<FK>>
+    + title: string
+    + budget: number
+    + status: string
+    + postedAt: Date
+  }
+
+  class "Proposal" as ProposalEntity {
+    + id: string <<PK>>
+    + freelancerId: string <<FK>>
+    + jobId: string <<FK>>
+    + bidAmount: number
+    + status: string
+    + freelancerEmail: string
+  }
+}
+
+' --- RELATIONSHIPS ---
+
+' React Components use the Context
+PostJob ..> AuthContext : uses
+JobDetails ..> AuthContext : uses
+Dashboard ..> AuthContext : uses
+
+' React Components manipulate Data Entities
+PostJob ..> JobEntity : creates
+JobDetails ..> ProposalEntity : creates/updates
+JobDetails ..> JobEntity : updates (status)
+Dashboard ..> JobEntity : reads/deletes
+
+' Data Relationships (Conceptual)
+UserEntity "1" -- "0..*" JobEntity : posts >
+UserEntity "1" -- "0..*" ProposalEntity : submits >
+JobEntity "1" *-- "0..*" ProposalEntity : contains >
+
+@enduml

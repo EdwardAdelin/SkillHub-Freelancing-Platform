@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+title State Diagram: Proposal Lifecycle
+
+state "Pending" as Pending
+state "Accepted" as Accepted
+
+[*] --> Pending : Freelancer Submits Bid
+note right of Pending
+  Visible to Client.
+  Waiting for decision.
+end note
+
+Pending --> Accepted : Client Accepts Proposal
+note right of Accepted
+  Freelancer is Hired.
+  Job moves to 'In Progress'.
+end note
+
+Pending --> [*] : Job Deleted / Other Bid Accepted
+
+Accepted --> [*] : Job Completed
+@enduml
