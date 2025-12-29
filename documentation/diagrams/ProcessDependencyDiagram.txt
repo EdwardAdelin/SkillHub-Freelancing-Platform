@@ -1,0 +1,45 @@
+@startuml
+!theme plain
+title Process Dependency Diagram
+
+package "Client Browser (Background Tasks)" {
+    component "Process 1:\nAuth State Listener" as AuthProcess
+    component "Process 2:\nStatus Synchronization" as SyncProcess
+}
+
+package "External / Admin" {
+    component "Process 3:\nAdministrative Maintenance\n(Firebase Console)" as AdminProcess
+}
+
+package "Data Modules (Firestore)" {
+    database "Users Collection" as UserData
+    database "Jobs Collection" as JobData
+    database "Proposals Sub-Collection" as ProposalData
+}
+
+package "Services" {
+    component "Firebase Auth" as AuthService
+}
+
+' --- Relationships ---
+
+' Auth Process
+AuthProcess --> AuthService : <<Monitors Token>>
+AuthProcess ..> UserData : <<Syncs Profile>>
+
+' Status Sync (The Notification Replacement)
+SyncProcess --> JobData : <<Polls Status>>
+SyncProcess --> ProposalData : <<Polls Status>>
+
+' Admin Maintenance
+AdminProcess ..> UserData : <<Manage Users>>
+AdminProcess ..> JobData : <<Moderate Content>>
+AdminProcess ..> ProposalData : <<Moderate Content>>
+
+note right of SyncProcess
+  Implements FR9 by
+  pulling latest data
+  to Dashboard.
+end note
+
+@enduml
