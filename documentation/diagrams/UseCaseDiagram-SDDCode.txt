@@ -1,0 +1,77 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' --- PRIMARY ACTORS (Left Side) ---
+actor "User" as user
+actor "Client" as client
+actor "Freelancer" as freelancer
+actor "Administrator" as admin
+
+' INHERITANCE
+client --|> user
+freelancer --|> user
+
+' --- SECONDARY ACTOR (Right Side - The Data Modules) ---
+' This represents the Data Modules defined in 3.3
+actor "Cloud Firestore\n(Data Modules)" as db <<Database>>
+
+rectangle "SkillHub Platform" {
+
+  ' USER USE CASES
+  usecase "FR1: Register / Login" as FR1
+  usecase "FR2: Manage Profile" as FR2
+  usecase "FR9: View Status Updates" as FR9
+  
+  user --> FR1
+  user --> FR2
+  user --> FR9
+
+  ' CLIENT USE CASES
+  usecase "FR3: Post Job" as FR3
+  usecase "FR4: Manage Posted Jobs" as FR4
+  usecase "FR8: Contact Freelancer" as FR8
+  usecase "FR10: Hire Freelancer" as FR10
+  
+  client --> FR3
+  client --> FR4
+  client --> FR8
+  client --> FR10
+
+  ' FREELANCER USE CASES
+  usecase "FR5: Browse Jobs" as FR5
+  usecase "FR6: Submit Proposal" as FR6
+  usecase "FR7: Contact Client" as FR7
+  usecase "FR11: Complete Job" as FR11
+  
+  freelancer --> FR5
+  freelancer --> FR6
+  freelancer --> FR7
+  freelancer --> FR11
+
+  ' ADMIN USE CASES
+  usecase "FR12: Moderate Platform" as FR12
+  usecase "FR13: Manage Users" as FR13
+  
+  admin --> FR12
+  admin --> FR13
+
+  ' --- CONNECTIONS TO DATA MODULES ---
+  ' This highlights which Data Modules are touched by which Use Case
+  
+  FR1 ..> db : <<Read/Write>>\n(Users Collection)
+  FR2 ..> db : <<Read/Write>>\n(Users Collection)
+  
+  FR3 ..> db : <<Create>>\n(Jobs Collection)
+  FR4 ..> db : <<Read/Delete>>\n(Jobs Collection)
+  
+  FR5 ..> db : <<Read>>\n(Jobs Collection)
+  FR6 ..> db : <<Create>>\n(Proposals Sub-Col)
+  
+  FR10 ..> db : <<Update>>\n(Jobs & Proposals)
+  FR11 ..> db : <<Update>>\n(Jobs Collection)
+  
+  FR12 ..> db : <<Read/Write>>\n(All Collections)
+  FR13 ..> db : <<Read/Write>>\n(Users Collection)
+}
+@enduml

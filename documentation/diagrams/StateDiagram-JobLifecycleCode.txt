@@ -1,0 +1,30 @@
+@startuml
+!theme plain
+title State Diagram: Job Lifecycle
+
+state "Open" as Open
+state "In Progress" as InProgress
+state "Completed" as Completed
+
+[*] --> Open : Client Posts Job
+note right of Open
+  Visible in Search.
+  Accepting Proposals.
+end note
+
+Open --> InProgress : Client Hires Freelancer
+note right of InProgress
+  Hidden from Search.
+  Proposals Closed.
+end note
+
+Open --> [*] : Client Deletes Job
+
+InProgress --> Completed : Freelancer Marks Finished
+note right of Completed
+  Work is done.
+  Project closed.
+end note
+
+Completed --> [*]
+@enduml

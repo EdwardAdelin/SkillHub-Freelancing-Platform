@@ -1,0 +1,40 @@
+@startuml
+!theme plain
+title Sequence Diagram: Client Hires Freelancer
+
+actor "Client (Owner)" as Client
+participant "JobDetails.jsx" as Page <<React Component>>
+participant "Firebase SDK" as Firebase
+database "Firestore" as DB
+
+Client -> Page : View Received Proposals
+activate Page
+Page -> Client : List Proposals
+
+Client -> Page : Click "Hire Freelancer" button
+Page -> Client : Show Confirmation Alert
+Client -> Page : Confirm "Yes"
+
+group Transaction [Hire Logic]
+    Page -> Firebase : updateDoc('proposals/{id}', {status: 'accepted'})
+    activate Firebase
+    Firebase -> DB : Update Proposal Status
+    DB --> Firebase : Success
+    deactivate Firebase
+
+    Page -> Firebase : updateDoc('jobs/{id}', {status: 'in_progress'})
+    activate Firebase
+    Firebase -> DB : Update Job Status
+    note right
+      Changing status to 'in_progress'
+      removes job from public search.
+    end note
+    DB --> Firebase : Success
+    deactivate Firebase
+end
+
+Page -> Page : Reload / Update UI
+Page --> Client : Show "Hired" Badge
+
+deactivate Page
+@enduml

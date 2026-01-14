@@ -10,12 +10,14 @@ import Profile from './pages/Profile';
 import PostJob from './pages/PostJob';
 import JobSearch from './pages/JobSearch';
 import JobDetails from './pages/JobDetails';
+import ChatBot from './components/chatBot.jsx';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 text-secondary">
         <Navbar />
+        <ChatBot />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -26,6 +28,7 @@ function App() {
           <Route path="/jobs" element={<JobSearch />} />
           {/* Dynamic route for specific jobs */}
           <Route path="/jobs/:id" element={<JobDetails />} />
+          <Route path="/profile/:id" element={<Profile />} />
         </Routes>
       </div>
     </Router>

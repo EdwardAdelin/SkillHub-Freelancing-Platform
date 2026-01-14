@@ -1,0 +1,24 @@
+@startuml
+allowmixing
+skinparam componentStyle rectangle
+
+title Module 1 Interface: Authentication
+
+interface "AuthContext API" as AuthAPI {
+    + signUp(email, password, role)
+    + signIn(email, password)
+    + updateUserProfile(uid, profileData)
+}
+
+component "Auth & Profile Module" as AuthModule {
+    file "AuthContext.jsx"
+    file "Profile.jsx"
+}
+
+database "Firebase Auth" as FBAuth
+database "Users Collection" as UsersDB
+
+AuthModule -up- AuthAPI
+AuthModule ..> FBAuth : "Authenticates"
+AuthModule ..> UsersDB : "Persists [FR1, FR2]"
+@enduml

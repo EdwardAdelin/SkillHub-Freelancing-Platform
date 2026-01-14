@@ -1,0 +1,46 @@
+@startuml
+!theme plain
+title System Diagram - SkillHub Platform
+
+left to right direction
+skinparam componentStyle uml2
+
+' --- ACTORS (SRS Section 2.3) ---
+actor "Client" as client
+actor "Freelancer" as freelancer
+actor "Administrator" as admin
+
+' --- THE SYSTEM (SRS Section 2.1) ---
+package "Client Device (Browser)" {
+    component "SkillHub Web App" as webapp <<React.js>> {
+        [Auth Module]
+        [Job Module]
+        [Proposal Module]
+    }
+}
+
+' --- EXTERNAL INTERFACES (SRS Section 3.1) ---
+cloud "Google Cloud Platform" {
+    component "Firebase Authentication" as auth <<Identity Provider>>
+    database "Cloud Firestore" as db <<NoSQL Database>>
+}
+
+component "External Email Client" as mail <<Mailto Protocol>>
+
+' --- RELATIONSHIPS ---
+
+' User Interactions
+client --> webapp : Post Jobs, Hire
+freelancer --> webapp : Search, Submit Bid
+admin --> webapp : View Content
+
+' System Interactions (The Code We Wrote)
+webapp --> auth : 1. Verify Identity (SDK)
+webapp --> db : 2. Read/Write Data (JSON)
+webapp ..> mail : 3. Trigger Messages (href='mailto:')
+
+' Admin Direct Access
+admin .down.> db : Manage Data (Firebase Console)
+admin .down.> auth : Manage Users (Firebase Console)
+
+@enduml

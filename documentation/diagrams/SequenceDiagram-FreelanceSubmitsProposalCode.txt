@@ -1,0 +1,39 @@
+@startuml
+!theme plain
+title Sequence Diagram: Freelancer Submits Proposal
+
+actor "Freelancer" as User
+participant "JobDetails.jsx" as Page <<React Component>>
+participant "Firebase SDK" as Firebase
+database "Firestore" as DB
+
+User -> Page : Open Job Page
+activate Page
+
+Page -> Firebase : checkApplied(userId, jobId)
+activate Firebase
+Firebase -> DB : Query 'proposals' collection
+DB --> Firebase : Return empty (Not applied yet)
+Firebase --> Page : Show "Submit Form"
+deactivate Firebase
+
+User -> Page : Fill Form (Price, Time) & Click "Submit"
+Page -> Firebase : addDoc('jobs/{id}/proposals', data)
+activate Firebase
+
+Firebase -> DB : Create Proposal Document
+note right
+  Data includes:
+  - bidAmount
+  - freelancerEmail
+  - status: 'pending'
+end note
+DB --> Firebase : Success (Doc ID)
+Firebase --> Page : Success
+deactivate Firebase
+
+Page -> Page : Update State (Hide Form)
+Page --> User : Show "Application Submitted" Card
+
+deactivate Page
+@enduml

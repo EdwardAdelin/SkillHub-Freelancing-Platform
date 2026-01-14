@@ -1,0 +1,30 @@
+@startuml
+!theme plain
+title Module Dependency Diagram
+
+package "Functional Modules (Frontend)" {
+    component "Module 1:\nAuthentication & User Context" as AuthModule
+    component "Module 2:\nJob Management & Discovery" as JobModule
+    component "Module 3:\nProposal & Transaction System" as ProposalModule
+}
+
+package "Data Modules (Firestore)" {
+    database "Users Collection" as UserData
+    database "Jobs Collection" as JobData
+    database "Proposals Sub-Collection" as ProposalData
+}
+
+' --- Persistence Dependencies (Solid Lines) ---
+AuthModule --> UserData : <<Reads/Writes Profiles>>
+JobModule --> JobData : <<Reads/Writes Jobs>>
+ProposalModule --> ProposalData : <<Writes Bids>>
+ProposalModule --> JobData : <<Updates Status>>
+
+' --- Internal Logic Dependencies (Dotted Lines) ---
+JobModule ..> AuthModule : <<Uses User ID>>
+ProposalModule ..> AuthModule : <<Uses User ID>>
+
+' --- Data Hierarchy ---
+JobData *-- ProposalData : <<Parent/Child>>
+
+@enduml

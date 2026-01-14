@@ -1,0 +1,125 @@
+@startuml
+!theme plain
+title Class Diagram - SkillHub (Exact Implementation)
+
+package "Presentation Layer (src/pages)" {
+
+  class "Home" as Home <<React Component>> {
+    + render()
+  }
+
+  class "Register" as Register <<React Component>> {
+    - formData: object
+    + handleSubmit(e)
+  }
+
+  class "Login" as Login <<React Component>> {
+    - email: string
+    - password: string
+    + handleLogin(e)
+  }
+
+  class "Profile" as Profile <<React Component>> {
+    - isEditing: boolean
+    - formData: object
+    + fetchProfile()
+    + handleSave()
+  }
+
+  class "Dashboard" as Dashboard <<React Component>> {
+    - myJobs: array
+    - activeBids: array
+    + handleDelete(jobId)
+    + handleFinishJob(jobId)
+  }
+
+  class "PostJob" as PostJob <<React Component>> {
+    - formData: object
+    + handleSubmit(e)
+  }
+
+  class "JobSearch" as JobSearch <<React Component>> {
+    - jobs: array
+    - searchTerm: string
+    - selectedCategory: string
+    - minBudget: number
+    + fetchJobs()
+  }
+
+  class "JobDetails" as JobDetails <<React Component>> {
+    - job: object
+    - proposals: array
+    - existingProposal: object
+    - bidAmount: number
+    - deliveryTime: number
+    + fetchProposals()
+    + checkIfApplied()
+    + handleAcceptProposal(proposalId)
+    + handleSubmitProposal(e)
+  }
+}
+
+package "Logic Layer (src/lib)" {
+  class "AuthContext" as AuthContext <<React Context>> {
+    + user: User object
+    + loading: boolean
+    - useEffect() : Listener
+  }
+
+  class "FirebaseConfig" as Firebase <<Module>> {
+    + auth: Auth
+    + db: Firestore
+  }
+}
+
+package "Data Layer (Firestore Collections)" {
+
+  class "User" as UserDoc <<Document>> {
+    + uid: string <<PK>>
+    + email: string
+    + role: string
+    + skills: array
+  }
+
+  class "Job" as JobDoc <<Document>> {
+    + id: string <<PK>>
+    + clientId: string <<FK>>
+    + title: string
+    + status: 'open' | 'in_progress' | 'completed'
+  }
+
+  class "Proposal" as ProposalDoc <<Sub-Collection>> {
+    + id: string <<PK>>
+    + freelancerId: string <<FK>>
+    + bidAmount: number
+    + status: 'pending' | 'accepted'
+  }
+}
+
+' --- RELATIONSHIPS ---
+
+' Context Usage
+AuthContext ..> Firebase : uses SDK
+Register ..> AuthContext : uses
+Login ..> AuthContext : uses
+Dashboard ..> AuthContext : uses
+Profile ..> AuthContext : uses
+PostJob ..> AuthContext : uses
+JobDetails ..> AuthContext : uses
+
+' Page Navigation / Data Flow
+Home ..> Register : links to
+Home ..> Login : links to
+Dashboard ..> JobDetails : links to
+JobSearch ..> JobDetails : links to
+
+' Database Operations
+PostJob ..> JobDoc : creates
+Dashboard ..> JobDoc : reads/updates/deletes
+Dashboard ..> ProposalDoc : reads (Group Query)
+JobDetails ..> ProposalDoc : creates/reads/updates
+JobDetails ..> JobDoc : reads/updates
+Profile ..> UserDoc : reads/updates
+Register ..> UserDoc : creates
+
+@enduml

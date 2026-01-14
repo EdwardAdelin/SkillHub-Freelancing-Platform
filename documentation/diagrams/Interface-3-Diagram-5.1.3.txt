@@ -1,0 +1,29 @@
+@startuml
+allowmixing
+skinparam componentStyle rectangle
+
+title Module 3 Interface: Proposal & Transaction System
+
+interface "Proposal API" as ProposalAPI {
+    + submitProposal(freelancerId, jobId, bidData)
+    + hireFreelancer(jobId, proposalId)
+    + completeJob(jobId)
+}
+
+component "Proposal & Transaction Module" as ProposalModule {
+    file "JobDetails.jsx"
+}
+
+database "Jobs Collection" as JobData
+database "Proposals Sub-Collection" as ProposalData
+
+ProposalModule -up- ProposalAPI
+ProposalModule ..> ProposalData : "Writes Bids [FR6]"
+ProposalModule ..> JobData : "Updates Status [FR10, FR11]"
+
+note right of ProposalAPI
+  **submitProposal**: Writes to nested sub-collection [FR6].
+  **hireFreelancer**: Updates job status to 'in_progress' [FR10].
+  **completeJob**: Updates job status to 'completed' [FR11].
+end note
+@enduml
