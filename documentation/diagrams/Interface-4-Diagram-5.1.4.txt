@@ -1,0 +1,31 @@
+@startuml
+allowmixing
+skinparam componentStyle rectangle
+
+title Module 4 Interface: AI ChatBot Assistant
+
+interface "Chat API (Flask)" as ChatAPI {
+    + POST /chat(message) : reply
+}
+
+package "SkillHub Frontend" {
+    component "ChatBot.jsx" as ChatUI
+}
+
+package "SkillHub Backend" {
+    component "app.py (Flask)" as PythonBackend
+    file "knowledge_base.py" as Docs
+}
+
+database "Hugging Face API" as HFAI
+
+ChatUI -down-> ChatAPI : "Fetch request"
+PythonBackend -up- ChatAPI
+PythonBackend .left.> Docs : "Injects Context"
+PythonBackend .right.> HFAI : "Inference [Llama-3]"
+
+note bottom of ChatAPI
+  **Input**: JSON { "message": string }
+  **Output**: JSON { "reply": string }
+end note
+@enduml

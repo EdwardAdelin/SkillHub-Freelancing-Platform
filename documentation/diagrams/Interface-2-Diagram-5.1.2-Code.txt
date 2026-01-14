@@ -1,0 +1,28 @@
+@startuml
+allowmixing
+skinparam componentStyle rectangle
+
+title Module 2 Interface: Job Management & Discovery
+
+interface "Job Management API" as JobAPI {
+    + postJob(clientId, jobDetails) : result
+    + searchJobs(filterCriteria) : array
+    + getJobDetails(jobId) : object
+}
+
+component "Job Management Module" as JobModule {
+    file "PostJob.jsx"
+    file "JobSearch.jsx"
+    file "Dashboard.jsx"
+}
+
+database "Jobs Collection" as JobData
+
+JobModule -up- JobAPI
+JobModule ..> JobData : "Reads/Writes [FR3, FR5]"
+
+note right of JobAPI
+  **postJob**: Creates and publishes a new job [FR3].
+  **searchJobs**: Executes queries across listings [FR5].
+end note
+@enduml
