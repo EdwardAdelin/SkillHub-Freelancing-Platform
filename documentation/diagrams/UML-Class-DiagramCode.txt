@@ -1,0 +1,64 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+
+package "Authentication & Profile Module" {
+    class "AuthContext" as Auth {
+        - auth: FirebaseAuth
+        - db: Firestore
+        + currentUser: User
+        + signUp(email, password, role)
+        + signIn(email, password)
+        + updateUserProfile(uid, profileData)
+    }
+}
+
+package "Job Management & Discovery" {
+    class "JobPoster" as JobPost {
+        - db: Firestore
+        + postJob(clientId, jobDetails)
+        + deleteJob(jobId)
+    }
+    
+    class "JobSearchEngine" as Search {
+        - db: Firestore
+        + searchAndFilterJobs(filters)
+    }
+}
+
+package "Proposal & Transaction System" {
+    class "TransactionManager" as Transact {
+        - db: Firestore
+        + recordProposal(freelancerId, jobId, bidData)
+        + acceptProposal(jobId, proposalId)
+        + markAsCompleted(jobId)
+    }
+}
+
+package "AI ChatBot System" {
+    class "ChatInferenceEngine" as AIBackend {
+        - hf_client: InferenceClient
+        - PLATFORM_DOCS: String
+        + chat(user_message)
+        - generate_prompt(query)
+    }
+}
+
+package "Data Modules (Firestore)" {
+    class "UserDataModule" as UserDB {
+        + users_collection: Collection
+    }
+    class "JobDataModule" as JobDB {
+        + jobs_collection: Collection
+        + proposals_subcollection: SubCollection
+    }
+}
+
+' --- Relationships ---
+Auth --> UserDB : "Persists Profiles"
+JobPost --> JobDB : "Creates Jobs"
+Search --> JobDB : "Queries Jobs"
+Transact --> JobDB : "Updates Status / Bids"
+AIBackend ..> Auth : "Contextual Help"
+
+@enduml

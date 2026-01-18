@@ -1,0 +1,57 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam packageStyle rectangle
+title Firestore Data Model: Collections & Sub-Collections
+
+package "Users Collection (Root)" as UsersPkg {
+    object "User Document" as UserDoc {
+        **DocumentID**: UID (from Auth)
+        --
+        displayName: string
+        email: string
+        role: "Client" | "Freelancer"
+        skills: array<string>
+        title: string
+        bio: string
+    }
+}
+
+package "Jobs Collection (Root)" as JobsPkg {
+    object "Job Document" as JobDoc {
+        **DocumentID**: auto-generated
+        --
+        title: string
+        description: string
+        budget: number
+        deadline: string
+        status: "open" | "in_progress" | "completed"
+        createdAt: timestamp
+        **clientId**: string (Ref: UserDoc.UID)
+    }
+
+    package "Proposals Sub-Collection" as PropPkg {
+        object "Proposal Document" as PropDoc {
+            **DocumentID**: auto-generated
+            --
+            bidAmount: number
+            deliveryTime: number
+            description: string
+            freelancerEmail: string
+            status: "pending" | "accepted"
+            timestamp: timestamp
+            **freelancerId**: string (Ref: UserDoc.UID)
+        }
+    }
+}
+
+' --- Relationships ---
+JobDoc *-- PropDoc : "<<nested>> Proposals sub-collection"
+JobDoc ..> UserDoc : "<<references>> clientId"
+PropDoc ..> UserDoc : "<<references>> freelancerId"
+
+note bottom of PropPkg
+  The Proposals collection is physically 
+  nested inside the parent Job document.
+end note
+@enduml
