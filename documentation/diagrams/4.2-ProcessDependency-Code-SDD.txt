@@ -1,0 +1,31 @@
+@startuml
+skinparam componentStyle rectangle
+title "4.2 Process Dependency Diagram"
+
+package "Functional Modules" {
+    [Module 2: Job Discovery] as Mod2
+    [Module 3: Proposal System] as Mod3
+}
+
+package "Background Processes" {
+    control "Freelancer Submits Proposal" as Proc1
+    control "Client Hires Freelancer" as Proc2
+    control "NotificationProcess" as Notif
+}
+
+database "Firestore" {
+    storage "Jobs Collection" as JobColl
+    storage "Proposals Sub-Coll" as PropColl
+}
+
+'--- Interactions ---
+Mod2 --> Proc1 : "Trigger Submission"
+Proc1 --> PropColl : "Write Bid"
+Proc1 ..> Notif : "Queue Alert"
+
+Mod3 --> Proc2 : "Trigger Hiring"
+Proc2 --> JobColl : "Update Status"
+Proc2 ..> Notif : "Queue Alert"
+
+Notif ..> JobColl : "Fetch Context"
+@enduml

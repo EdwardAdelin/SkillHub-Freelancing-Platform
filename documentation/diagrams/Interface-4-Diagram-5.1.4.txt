@@ -28,4 +28,4 @@ note bottom of ChatAPI
   **Input**: JSON { "message": string }
   **Output**: JSON { "reply": string }
 end note
-@enduml
+@endumlB
