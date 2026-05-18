@@ -3,6 +3,8 @@
 ## 1 - About the Project
 SkillHub is a job board application built with React and Firebase. It allows users to browse and search for job listings, view detailed job descriptions, and apply for jobs directly through the platform. The application features a clean and user-friendly interface, making it easy for job seekers to find relevant opportunities.
 
+Make sure you watch the demo video: https://youtu.be/2x5ZV1q4PO4 
+
 ## How to Run the Project Locally
 1. Clone the repository
 ```bash
