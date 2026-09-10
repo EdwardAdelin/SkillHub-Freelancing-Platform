@@ -10,7 +10,7 @@ The project aims to showcase the use of Firebase as a SaaS platform, acting as a
 
 The web application includes a dedicated Python service that communicates with Hugging Face to fetch AI chatbot responses. The chatbot therefore runs in the cloud through Hugging Face.
 
-There are two main types of users: clients and freelancers. They can create posts, find each other, communicate, bid on projects, and collaborate. The application also includes SDD and SDT documents that showcase and describe its features.
+There are two main types of users: clients and freelancers. They can create posts, find each other, communicate, bid on projects, and collaborate. The application also includes SDD and SRS documents that showcase and describe its features. In the documentation folder you can also find all kinds of diagrams that are explained in depth in the SDD / SRS document.
 
 
 ## How to Run the Project Locally
