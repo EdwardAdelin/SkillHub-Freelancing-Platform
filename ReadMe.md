@@ -5,6 +5,14 @@ SkillHub is a job board application built with React and Firebase. It allows use
 
 Make sure you watch the demo video: https://youtu.be/2x5ZV1q4PO4 
 
+## 2 - Why and how was built?
+The project aims to showcase the use of Firebase as a SaaS platform, acting as a BaaS. It also highlights document-oriented databases, a technology that I have personally used less frequently than relational databases such as MySQL.
+
+The web application includes a dedicated Python service that communicates with Hugging Face to fetch AI chatbot responses. The chatbot therefore runs in the cloud through Hugging Face.
+
+There are two main types of users: clients and freelancers. They can create posts, find each other, communicate, bid on projects, and collaborate. The application also includes SDD and SDT documents that showcase and describe its features.
+
+
 ## How to Run the Project Locally
 1. Clone the repository
 ```bash
